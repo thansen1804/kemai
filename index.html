@@ -9,11 +9,11 @@
             font-family: Arial, sans-serif;
             background-color: #ffe6e6;
             margin: 0;
-            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
         .container {
             width: 100vw;
@@ -21,9 +21,13 @@
             display: flex;
             align-items: center;
             overflow: hidden;
+            position: relative;
         }
         .slider {
             display: flex;
+            width: 100%;
+            height: 100%;
+            position: absolute;
             transition: transform 0.5s ease-in-out;
         }
         .slide {
@@ -32,13 +36,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: opacity 0.5s ease-in-out;
         }
         img {
             max-width: 80%;
             max-height: 80vh;
             border-radius: 10px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            cursor: grab;
         }
         .letter {
             background: white;
@@ -52,7 +56,7 @@
     </style>
 </head>
 <body>
-    <div class="container" id="sliderContainer">
+    <div class="container">
         <div class="slider" id="slider">
             <div class="slide"><img src="your-image1.jpg" alt="Picture 1"></div>
             <div class="slide"><img src="your-image2.jpg" alt="Picture 2"></div>
@@ -69,30 +73,44 @@
     
     <script>
         let slider = document.getElementById("slider");
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+        let slides = document.querySelectorAll(".slide");
+        let currentIndex = 0;
+        let startX = 0;
+        let isDragging = false;
+
+        function goToNextSlide() {
+            if (currentIndex < slides.length - 1) {
+                slides[currentIndex].style.opacity = "0";
+                currentIndex++;
+                slider.style.transform = `translateX(-${currentIndex * 100}vw)`;
+                setTimeout(() => {
+                    slides[currentIndex - 1].style.display = "none";
+                }, 500);
+            }
+        }
 
         slider.addEventListener("mousedown", (e) => {
-            isDown = true;
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
+            isDragging = true;
+            startX = e.pageX;
         });
-        
-        slider.addEventListener("mouseleave", () => {
-            isDown = false;
+
+        slider.addEventListener("mouseup", (e) => {
+            if (isDragging && e.pageX < startX - 50) {
+                goToNextSlide();
+            }
+            isDragging = false;
         });
-        
-        slider.addEventListener("mouseup", () => {
-            isDown = false;
+
+        slider.addEventListener("touchstart", (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX;
         });
-        
-        slider.addEventListener("mousemove", (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 2; 
-            slider.style.transform = `translateX(${-walk}px)`;
+
+        slider.addEventListener("touchend", (e) => {
+            if (isDragging && e.changedTouches[0].clientX < startX - 50) {
+                goToNextSlide();
+            }
+            isDragging = false;
         });
     </script>
 </body>
