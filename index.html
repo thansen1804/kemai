@@ -7,37 +7,93 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             background-color: #ffe6e6;
-            color: #333;
-            padding: 20px;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
         .container {
-            max-width: 600px;
-            margin: auto;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        img {
+            max-width: 80%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: grab;
+        }
+        .letter {
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        img {
-            width: 100%;
-            max-width: 300px;
-            border-radius: 10px;
-            margin: 10px 0;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-size: 18px;
+            max-width: 600px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>For My Love ❤️</h1>
-        <p>My dearest,</p>
-        <p><strong>My heart beats for you every second, and every moment I spend with you is the most precious memory of my life.</strong></p>
-        <p>These are some of our beautiful memories:</p>
-        <img src="your-image1.jpg" alt="Picture 1">
-        <img src="your-image2.jpg" alt="Picture 2">
-        <p>Always yours,</p>
-        <p><strong>Your Name</strong></p>
+    <div class="container" id="sliderContainer">
+        <div class="slider" id="slider">
+            <div class="slide"><img src="your-image1.jpg" alt="Picture 1"></div>
+            <div class="slide"><img src="your-image2.jpg" alt="Picture 2"></div>
+            <div class="slide"><img src="your-image3.jpg" alt="Picture 3"></div>
+            <div class="slide letter">
+                <h2>For My Love ❤️</h2>
+                <p>My heart beats for you every second, and every moment I spend with you is the most precious memory of my life.</p>
+                <p>You make my world brighter, my days happier, and my dreams sweeter. I love you endlessly. 💖</p>
+                <p>Always yours,</p>
+                <p><strong>Your Name</strong></p>
+            </div>
+        </div>
     </div>
+    
+    <script>
+        let slider = document.getElementById("slider");
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener("mousedown", (e) => {
+            isDown = true;
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        
+        slider.addEventListener("mouseleave", () => {
+            isDown = false;
+        });
+        
+        slider.addEventListener("mouseup", () => {
+            isDown = false;
+        });
+        
+        slider.addEventListener("mousemove", (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; 
+            slider.style.transform = `translateX(${-walk}px)`;
+        });
+    </script>
 </body>
 </html>
